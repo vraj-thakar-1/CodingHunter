@@ -1,22 +1,29 @@
-import React from "react";
-import * as fs from "fs";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import styles from "../../styles/BlogPost.module.css";
+import * as fs from "fs";
 
 // Step 1: Find the file corresponding to the slug
 // Step 2: Populate them inside the page
 const Slug = (props) => {
+  function createMarkup(c) {
+    return { __html: c };
+  }
+  const [blog, setBlog] = useState(props.myBlog);
+
   return (
     <div className={styles.container}>
       <main className={styles.main}>
-        <h1>Title of the page: {props.myBlog.slug}</h1>
+        <h1>{blog && blog.title}</h1>
         <hr />
-        <div>{props.myBlog.content}</div>
+        {blog && (
+          <div dangerouslySetInnerHTML={createMarkup(blog.content)}></div>
+        )}
       </main>
     </div>
   );
 };
 
-export default Slug;
 export async function getStaticPaths() {
   return {
     paths: [
@@ -24,25 +31,17 @@ export async function getStaticPaths() {
       { params: { slug: "how-to-learn-javascript" } },
       { params: { slug: "how-to-learn-nextjs" } },
     ],
-    fallback: true, // can also be true or 'blocking'
+    fallback: true, // false or 'blocking'
   };
 }
 
 export async function getStaticProps(context) {
   const { slug } = context.params;
-  let Data = await fs.promises.readFile(`blogdata/${slug}.json`, "utf-8");
-  let myBlog = JSON.parse(Data);
+
+  let myBlog = await fs.promises.readFile(`blogdata/${slug}.json`, "utf-8");
 
   return {
-    props: { myBlog }, // will be passed to the page component as props
+    props: { myBlog: JSON.parse(myBlog) }, // will be passed to the page component as props
   };
 }
-// export async function getServerSideProps(context) {
-//   let data = fetch(
-//     `http://localhost:3000/api/getblog?slug=${context.query.slug}`
-//   );
-//   let blog = await (await data).json();
-//   return {
-//     props: { blog }, // will be passed to the page component as props
-//   };
-// }
+export default Slug;

@@ -1,22 +1,22 @@
 import React from "react";
-import styles from "@/styles/Home.module.css";
+import styles from "../styles/Home.module.css";
 import Link from "next/link";
 const Navbar = () => {
   return (
-    <nav className={styles.navbar}>
+    <nav className={styles.mainnav}>
       <ul>
-        <li>
-          <Link href={"/"}>{<>Home</>} </Link>
-        </li>
-        <li>
-          <Link href={"/about"}>{<>About</>} </Link>
-        </li>
-        <li>
-          <Link href={"/blog"}>{<>Blog</>} </Link>
-        </li>
-        <li>
-          <Link href={"/contact"}>{<>Contact</>} </Link>
-        </li>
+        <Link href="/">
+          <li>Home</li>
+        </Link>
+        <Link href="/about">
+          <li>About</li>
+        </Link>
+        <Link href="/blog">
+          <li>Blog</li>
+        </Link>
+        <Link href="/contact">
+          <li>Contact</li>
+        </Link>
       </ul>
     </nav>
   );
